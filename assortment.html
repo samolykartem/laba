@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>Асортимент - Карамельна Майстерня</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#fff8f0] text-[#5c3b2e] font-sans relative">
+
+  <!-- Шапка -->
+  <header class="bg-[#fcd9b8] py-6 shadow px-8 flex justify-between items-center relative">
+    <h1 class="absolute left-6 top-6 text-3xl font-bold hidden md:block">Карамельна Майстерня</h1>
+
+    <nav class="mx-auto space-x-6 text-lg">
+      <a href="index.html" class="hover:underline">Головна</a>
+      <a href="assortment.html" class="hover:underline">Асортимент</a>
+      <a href="feedback.html" class="hover:underline">Зворотній зв'язок</a>
+    </nav>
+
+    <div class="flex items-center space-x-4 absolute right-6 top-6">
+      <a href="register.html" title="Реєстрація" class="text-2xl hover:scale-110 transition-transform">👤</a>
+      <div class="relative">
+        <button id="toggle-cart" class="text-2xl">🛒</button>
+        <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Основна частина -->
+  <main class="p-8">
+    <h2 class="text-2xl font-semibold text-center mb-6">Наші смаки</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="flavor-container">
+      <!-- Товари додаються через JS -->
+    </div>
+  </main>
+
+  <!-- Випадаючий кошик -->
+  <div id="cart-panel" class="fixed top-20 right-6 bg-white p-6 rounded-2xl shadow max-w-md w-full sm:w-96 z-50 hidden">
+    <h3 class="text-2xl font-semibold mb-4 text-center">Ваш кошик</h3>
+    <ul id="cart" class="list-disc list-inside text-center text-lg mb-4"></ul>
+    <p id="empty-cart" class="text-center text-gray-500 mb-4">Кошик порожній</p>
+    <div class="flex justify-between space-x-4">
+      <button id="clear-cart" class="bg-red-200 px-4 py-2 rounded shadow hover:bg-red-300">Очистити</button>
+      <button id="checkout" class="bg-green-200 px-4 py-2 rounded shadow hover:bg-green-300">Оформити</button>
+    </div>
+  </div>
+
+  <!-- Скрипт -->
+  <script>
+    const flavors = [
+      { name: "Яблуко", color: "bg-green-200" },
+      { name: "Полуниця", color: "bg-red-200" },
+      { name: "Апельсин", color: "bg-orange-200" },
+      { name: "Мультифрукт", color: "bg-yellow-200" },
+      { name: "З картинкою", color: "bg-pink-200" }
+    ];
+
+    const container = document.getElementById("flavor-container");
+    const cartList = document.getElementById("cart");
+    const emptyCartMsg = document.getElementById("empty-cart");
+    const cartPanel = document.getElementById("cart-panel");
+    const toggleCart = document.getElementById("toggle-cart");
+    const cartCount = document.getElementById("cart-count");
+    const clearCartBtn = document.getElementById("clear-cart");
+    const checkoutBtn = document.getElementById("checkout");
+
+    let cartItems = [];
+
+    flavors.forEach(flavor => {
+      const card = document.createElement("div");
+      card.className = `${flavor.color} p-4 rounded-xl text-center shadow`;
+
+      const title = document.createElement("h3");
+      title.className = "text-xl font-semibold mb-2";
+      title.textContent = flavor.name;
+
+      const button = document.createElement("button");
+      button.textContent = "Додати в кошик";
+      button.className = "bg-white px-4 py-2 rounded shadow";
+      button.onclick = () => addToCart(flavor.name);
+
+      card.appendChild(title);
+      card.appendChild(button);
+      container.appendChild(card);
+    });
+
+    function addToCart(itemName) {
+      cartItems.push(itemName);
+
+      const item = document.createElement("li");
+      item.textContent = itemName;
+      cartList.appendChild(item);
+
+      updateCartState();
+    }
+
+    function updateCartState() {
+      if (cartItems.length > 0) {
+        emptyCartMsg.style.display = "none";
+        cartCount.textContent = cartItems.length;
+        cartCount.classList.remove("hidden");
+      } else {
+        emptyCartMsg.style.display = "block";
+        cartCount.classList.add("hidden");
+      }
+    }
+
+    toggleCart.addEventListener("click", () => {
+      cartPanel.classList.toggle("hidden");
+    });
+
+    clearCartBtn.addEventListener("click", () => {
+      cartItems = [];
+      cartList.innerHTML = "";
+      updateCartState();
+    });
+
+    checkoutBtn.addEventListener("click", () => {
+      if (cartItems.length === 0) {
+        alert("Ваш кошик порожній!");
+        return;
+      }
+      alert("Дякуємо за замовлення! Найближчим часом ми з вами зв’яжемося.");
+      cartItems = [];
+      cartList.innerHTML = "";
+      updateCartState();
+      cartPanel.classList.add("hidden");
+    });
+  </script>
+
+</body>
+</html> 
